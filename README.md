@@ -4,6 +4,8 @@ Every dream deserves an address.
 
 [Production site](https://vishalsinghbhadoriya.github.io/habitat-real-estate/) · [Source repository](https://github.com/vishalSinghBhadoriya/habitat-real-estate)
 
+![HABITAT homepage with an architectural courtyard photograph and property search](docs/homepage.webp)
+
 HABITAT is an Indian real estate marketplace built with React, Vite, strict TypeScript, React Router, Tailwind CSS and custom CSS. It uses Redux Toolkit, TanStack Query, React Hook Form, Zod, react-i18next, Leaflet and optional Supabase.
 
 ## Run locally
