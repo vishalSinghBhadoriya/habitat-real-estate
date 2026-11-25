@@ -1,0 +1,1 @@
+-- Demonstration inventory is bundled locally. Keep a connected database free of fictional listings.

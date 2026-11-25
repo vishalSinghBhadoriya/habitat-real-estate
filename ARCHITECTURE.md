@@ -1,0 +1,8 @@
+# Architecture
+
+- `src/app` owns lazy routes, providers and local selection state. `src/pages` assembles public screens. `src/features` contains focused data queries, domain math, workflows and interactive tools. `src/data` contains fictional demonstration inventory.
+- Redux stores guest favourites and comparison IDs. TanStack Query owns properties, signed media, owner records, authenticated favourites and leads. Result filters and pagination live in the URL.
+- `properties.owner_id` references Supabase Auth. `enquiries`, `visits` and `saved_properties` link to listings and their requesting accounts. RLS restricts drafts, owner updates, favourites and lead visibility. The visit RPC checks participant identity and valid state transitions. An hourly account request limit applies to enquiries and visits.
+- Photograph paths are validated against the listing ID and owner ID. The private Storage bucket permits owner uploads and reads of published photos. Short-lived signed URLs deliver the assets. Exact street addresses are absent from the public listing schema. Owners may opt to publish a WhatsApp number. Published descriptions should undergo moderation before broad rollout.
+- The homepage uses a responsive architectural masthead and an SVG floor-plan study with animated room highlights, keyboard-accessible priority controls and filtered discovery links. Native view transitions share the property image where supported. Route bundles load lazily and the hero has a smaller mobile derivative.
+- Development uses browser-local fictional records whenever Supabase variables are absent. Connected mode queries only the shared project; demonstration records stay local.
