@@ -8,7 +8,6 @@ import Card from '@/features/properties/Card'
 import SpaceLens from '@/features/property-search/SpaceLens'
 import {PlotTool} from '@/features/plot-studio/Plot'
 import {EmiTool} from '@/features/calculators/Calculators'
-import {supabase} from '@/lib/supabase'
 import {publicAsset} from '@/lib/paths'
 import './home.css'
 const categories=[['Apartments','Apartment',art.apart],['Independent houses','Independent house',art.villa],['Duplexes','Duplex',art.villa],['Villas','Villa',art.hero],['Residential plots','Residential plot',publicAsset('images/properties/plot.svg')],['Commercial','Office',art.office],['PG accommodation','PG',art.inside]]
@@ -18,7 +17,9 @@ export default function Home(){
  const [city,setCity]=useState('Indore')
  const inventory=useProperties()
  const count=useProperties(new URLSearchParams({q:city}),undefined,0,1)
- const picks=inventory.data?.items.slice(0,3)??[]
+ const items=inventory.data?.items??[]
+ const firstByCategory=[...new Set(items.map(p=>p.category))].flatMap(category=>items.find(p=>p.category===category)??[])
+ const picks=[...new Set([...firstByCategory,...items])].slice(0,3)
  return <>
  <section className="home-masthead">
   <div className="page-width masthead-layout">
@@ -33,7 +34,7 @@ export default function Home(){
   </div>
  </section>
  <section className="page-width section home-featured" id="featured"><div className="section-head"><div><p className="eyebrow accent">The property edit</p><h2>Places worth <em>finding.</em></h2></div><Link className="text-link" to="/properties">View all properties <ArrowUpRight size={18}/></Link></div>
- {!supabase&&<p className="demo-note">Sample listings and illustrative imagery</p>}{inventory.isError&&<p role="alert">Properties could not be loaded.</p>}{inventory.isPending&&<p>Loading properties…</p>}{inventory.isSuccess&&picks.length===0&&<p>No published properties yet.</p>}<div className="cards">{picks.map(p=><Card key={p.id} property={p}/>)}</div></section>
+ {picks.some(p=>p.demo)&&<p className="demo-note">Sample listings and illustrative imagery</p>}{inventory.isError&&<p role="alert">Properties could not be loaded.</p>}{inventory.isPending&&<p>Loading properties…</p>}{inventory.isSuccess&&picks.length===0&&<p>No published properties yet.</p>}<div className="cards">{picks.map(p=><Card key={p.id} property={p}/>)}</div></section>
  <SpaceLens/>
  <section className="page-width section"><p className="eyebrow accent">Find your kind of place</p><h2>Space for <em>every plan.</em></h2><div className="category-grid">{categories.map(([label,category,img])=><Link key={category} to={'/properties?'+new URLSearchParams({type:category})}><img src={img} loading="lazy" alt=""/><span>{label} <ArrowUpRight size={19}/></span></Link>)}</div></section>
  <section className="dark gallery-section"><div className="page-width section"><p className="eyebrow">Architectural gallery</p><h2>Spaces to <em>explore.</em></h2><figure><img key={chapter} src={gallery[chapter][1]} alt={gallery[chapter][0]+' concept'} loading="lazy"/><figcaption>Illustrative architectural studies</figcaption></figure><div className="segmented">{gallery.map(([title],index)=><button key={title} aria-pressed={chapter===index} onClick={()=>setChapter(index)}>{title}</button>)}</div></div></section>

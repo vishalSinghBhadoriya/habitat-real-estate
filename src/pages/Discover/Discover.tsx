@@ -37,16 +37,17 @@ export function Selections(){
  const comparing=useLocation().pathname==='/compare'
  const localIds=useSelector((state:State)=>comparing?state.selection.compared:state.selection.saved)
  const account=useAccountFavourites()
- const ids=!comparing&&account.isAccount?account.query.data??[]:localIds
+ const ids=!comparing&&account.isAccount?[...(account.query.data??[]),...localIds.filter(id=>id.startsWith('demo-'))]:localIds
  const dispatch=useDispatch()
  const {data=[],isError,isPending}=useQuery({queryKey:['selection',ids],queryFn:async()=>{
  if(!ids.length)return []
- if(!supabase)return ids.flatMap(id=>demo.find(p=>p.id===id)??[])
+ const samples=ids.flatMap(id=>demo.find(p=>p.id===id)??[])
+ if(!supabase)return samples
  const serverIds=ids.filter(id=>/^[\da-f-]{36}$/i.test(id))
- if(!serverIds.length)return []
+ if(!serverIds.length)return samples
  const {data,error}=await supabase.from('properties').select('*').eq('status','published').in('id',serverIds)
  if(error)throw error
- return Promise.all((data as Property[]).map(resolveImages))
+ return [...await Promise.all((data as Property[]).map(resolveImages)),...samples]
  }})
  return <section className="page-width section subpage"><p className="eyebrow accent">Your shortlist</p><h1>{comparing?'Compare':'Saved properties'}<em>.</em></h1>{comparing&&<p>Compare up to four properties side by side.</p>}{isPending?<p>Loading shortlist…</p>:isError?<p role="alert">This shortlist could not be loaded.</p>:!data.length?<p>Your shortlist is empty. <Link className="text-link" to="/properties">Browse properties <ArrowUpRight size={17}/></Link></p>:comparing?<div className="table-scroll"><table><thead><tr><th>Specification</th>{data.map(p=><th key={p.id}><Link className="text-link" to={'/property/'+p.slug}>{p.title}</Link><button className="icon" onClick={()=>dispatch(compare(p.id))} aria-label={'Remove '+p.title}>×</button></th>)}</tr></thead><tbody>{[
  ['Location',(p:Property)=>p.locality+', '+p.city],['Category',(p:Property)=>p.category],['Purpose',(p:Property)=>p.mode],['Price',(p:Property)=>money(p.price)+(['Rent','PG'].includes(p.mode)?' / mo':'')],['Area',(p:Property)=>p.area+' sq ft'],['Rate',(p:Property)=>money(p.price/p.area)+' / sq ft'],['BHK',(p:Property)=>p.bhk||'—'],['Furnishing',(p:Property)=>p.furnishing],['Facing',(p:Property)=>p.facing]

@@ -1,8 +1,10 @@
-export const types=['Apartment','Independent house','Duplex','Villa','Residential plot','Commercial plot','Office','Shop','Warehouse','PG','Hostel'] as const
+import type {DemoDetails} from './demoDetails'
+export const types=['Apartment','Independent house','Duplex','Villa','Residential plot','Commercial plot','Office','Shop','Warehouse','PG','Hostel','Farmhouse'] as const
 export const modes=['Buy','Rent','Plots','Commercial','PG'] as const
 export type Mode=typeof modes[number]
 export type PropertyFloorPlan={floor_plan?:string|null}
-export type Property={id:string;slug:string;title:string;city:string;locality:string;category:typeof types[number];mode:Mode;price:number;area:number;bhk:number;furnishing:string;facing:string;description:string;images:string[];lat?:number;lng?:number;whatsapp?:string|null;demo?:boolean;status?:string;owner_id?:string;created_at?:string}
+export type SeededProperty={demo_batch?:string|null;demo_details?:DemoDetails|null;imageAlts?:string[]}
+export type Property={id:string;slug:string;title:string;city:string;locality:string;category:typeof types[number];mode:Mode;price:number;area:number;bhk:number;furnishing:string;facing:string;description:string;images:string[];lat?:number;lng?:number;whatsapp?:string|null;demo?:boolean;status?:string;owner_id?:string;created_at?:string} & SeededProperty
 export const money=(value:number)=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(value)
 export function shortPrice(value:number){return value>=1e7 ? '₹'+(value/1e7).toLocaleString('en-IN',{maximumFractionDigits:2})+' Cr' :value>=1e5?'₹'+(value/1e5).toLocaleString('en-IN',{maximumFractionDigits:2})+' L':money(value)}
 export const units={ 'sq ft':1,'sq m':10.7639104167,'sq yd':9,'acre':43560,'hectare':107639.104167,'gaj':9 }

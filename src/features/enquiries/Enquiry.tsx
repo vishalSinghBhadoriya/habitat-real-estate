@@ -11,9 +11,10 @@ export function Enquiry({property}:{property:Property}){
  const [status,setStatus]=useState('')
  const [pending,setPending]=useState(false)
  const [copy,setCopy]=useState('')
+ if(property.demo)return <p className="card-surface">Demonstration listing. Enquiries and visits are unavailable.</p>
  const message='I’m interested in '+property.title+' in '+property.locality+', '+property.city+' ('+money(property.price)+'). Reference '+property.id+'. '+absoluteAppUrl(pathname)
  return <div className="card-surface"><h3>Talk to the owner.</h3><div className="segmented"><button aria-pressed={mode==='enquiries'} onClick={()=>{setMode('enquiries');setStatus('')}}>Enquire</button><button aria-pressed={mode==='visits'} onClick={()=>{setMode('visits');setStatus('')}}>Request a visit</button></div>
- {!supabase||property.demo?<p>Enquiries and visits are unavailable for this listing.</p>:!session?<Link className="text-link" to={'/login?next='+encodeURIComponent(pathname)}>Log in to contact the owner</Link>:<form key={mode} className="stack" onSubmit={async event=>{
+ {!supabase?<p>Enquiries and visits are unavailable for this listing.</p>:!session?<Link className="text-link" to={'/login?next='+encodeURIComponent(pathname)}>Log in to contact the owner</Link>:<form key={mode} className="stack" onSubmit={async event=>{
  event.preventDefault();if(!supabase||pending)return
  const form=event.currentTarget
  const data=Object.fromEntries(new FormData(form))

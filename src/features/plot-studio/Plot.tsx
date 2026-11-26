@@ -1,12 +1,12 @@
 import {useState} from 'react'
 import {money,units,convertArea,regionalArea} from '@/features/properties/model'
 type Unit=keyof typeof units
-export function PlotTool({compact=false,initialArea=1350}:{compact?:boolean;initialArea?:number}){
- const [width,setWidth]=useState(initialArea/45)
- const [length,setLength]=useState(45)
- const [rate,setRate]=useState(2500)
- const [side,setSide]=useState('South')
- const [road,setRoad]=useState(24)
+export function PlotTool({compact=false,initialArea=1350,initialWidth=initialArea/45,initialDepth=45,initialRate=2500,initialRoad=24,initialSide='South'}:{compact?:boolean;initialArea?:number;initialWidth?:number;initialDepth?:number;initialRate?:number;initialRoad?:number;initialSide?:string}){
+ const [width,setWidth]=useState(initialWidth)
+ const [length,setLength]=useState(initialDepth)
+ const [rate,setRate]=useState(initialRate)
+ const [side,setSide]=useState(initialSide)
+ const [road,setRoad]=useState(initialRoad)
  const [unit,setUnit]=useState<Unit>('sq ft')
  const [regional,setRegional]=useState(0)
  const [sale,setSale]=useState(0)
